@@ -23,12 +23,15 @@ export class ChartComponent implements OnInit {
   private color: any;
 
   private g: any;
-
-  constructor() {}
+  domain: string[];
+  constructor() {
+    this.domain = DATA.map((data) => data.type );
+  }
 
   ngOnInit() {
     this.initSvg();
     this.drawChart(DATA);
+    this.drawChartSmall(DATA);
   }
 
   private initSvg() {
@@ -38,9 +41,10 @@ export class ChartComponent implements OnInit {
     this.height = +this.svg.attr('height');
     this.radius = Math.min(this.width, this.height) / 2;
 
-    this.color = d3Scale
-      .scaleOrdinal()
-      .range([
+    this.color = d3Scale.scaleOrdinal()
+    .domain(this.domain)  
+    .range(['#87d546', '#356816']);
+    /*.range([
         '#87d546',
         '#356816',
         '#7b6888',
@@ -49,7 +53,7 @@ export class ChartComponent implements OnInit {
         '#d0743c',
         '#ff8c00',
       ]);
-
+      */
     this.arc = d3Shape
       .arc()
       .outerRadius(this.radius - 10)
@@ -79,11 +83,55 @@ export class ChartComponent implements OnInit {
 
     g.append('path')
       .attr('d', this.arc)
-      .style('fill', (d) => this.color(d.data.age));
+      .style('fill', (d) => this.color(d.data.porcent));
 
     g.append('text')
       .attr('transform', (d) => 'translate(' + this.arc.centroid(d) + ')')
       .attr('dy', '.35em')
-      .text((d) => d.data.age);
+      .text();
+  }
+  private drawChartSmall(data: any[]) {
+    /*let g = this.svg
+      .selectAll('.legend')
+      .data(this.color.domain())
+      .enter()
+      .append('g')
+      .attr('class', 'arc');
+
+    g.append('path')
+      .attr('d', this.arc)
+      .style('fill', (d) => this.color(d.data.type));
+      */
+    const legendRectSize = 13;
+    const legendSpacing = 7;
+    const length = this.domain.length;
+    
+    const legend = this.svg
+      .selectAll('.legend') //the legend and placement
+      .data(this.domain)
+      .enter()
+      .append('g')
+      .attr('class', 'slegend')
+      .attr('transform', function (d, i) {
+        const height = legendRectSize + legendSpacing;
+        const offset = 1;
+        const horz = 1 ;
+        const vert = i * 25;
+        return 'translate(' + horz + ',' + vert + ')';
+      });
+    legend
+      .append('rect') //keys
+      .style('fill', this.color)
+      .style('stroke', this.color)
+      .attr('cx', 0)
+      .attr('cy', 0)
+      .attr('r', '.5rem');
+    legend
+      .append('text') //labels
+      .attr('x', legendRectSize + legendSpacing)
+      .attr('y', legendRectSize - legendSpacing)
+      .text(function (d) {
+        return d;
+      });
   }
 }

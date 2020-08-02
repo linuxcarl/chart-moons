@@ -8,3 +8,16 @@
 .arc path {
   stroke: transparent;
 }
+body {
+    font: 12px sans-serif;
+  }
+
+  .circle-legend circle {
+    stroke: red;
+    stroke-dasharray: 14, 21;
+    fill: aliceblue;
+  }
+  .slegend{
+      background: red;
+      border: solid 2px blue;
+  }
