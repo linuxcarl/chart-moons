@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "charts-moons"
+    }
+  },
+  "defaultProject": "charts-moons",
+  "cli": {
+    "analytics": false
+  }
 }
